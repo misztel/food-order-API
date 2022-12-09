@@ -13,6 +13,7 @@ const userAdminRoutes = require('./routes/admin/user');
 const authRoutes = require('./routes/auth');
 // const restaurantRoutes = require('./routes/restaurant');
 const restaurantAdminRoutes = require('./routes/admin/restaurant');
+const itemCategoryAdminRoutes = require('./routes/admin/itemCategory');
 const imageRoutes = require('./routes/image');
 
 const deckRoutes = require('./routes/deck');
@@ -41,7 +42,7 @@ app.use((req, res, next) => {
 // app.use('/api', postRoutes);
 app.use('/auth', authRoutes);
 app.use('/api', userRoutes, deckRoutes, cardRoutes, imageRoutes);
-app.use('/admin', userAdminRoutes, restaurantAdminRoutes);
+app.use('/admin', userAdminRoutes, restaurantAdminRoutes, itemCategoryAdminRoutes);
 
 // err handling
 app.use((error, req, res, next) => {

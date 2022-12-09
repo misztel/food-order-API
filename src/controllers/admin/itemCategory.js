@@ -1,6 +1,7 @@
 const { validationResult } = require('express-validator');
 
 const ItemCategory = require('../../models/itemCategory');
+const Restaurant = require('../../models/restaurant');
 
 exports.addItemCategory = (req, res, next) => {
   const errors = validationResult(req);
@@ -14,20 +15,26 @@ exports.addItemCategory = (req, res, next) => {
   const {
     name,
     image,
-    restaurant
+    restaurant: restaurantId
   } = req.body;
 
   const itemCategory = new ItemCategory({
     name,
     image,
-    restaurant
+    restaurant: restaurantId
   });
 
   itemCategory.save()
     .then((result) => {
-      res.status(201).json({
-        message: 'Item Category Created!',
-        itemCategory: result
+      Restaurant.findOne({ _id: restaurantId }, (err, restaurant) => {
+        if (restaurant) {
+          restaurant.itemCategories.push(itemCategory);
+          restaurant.save();
+          res.status(201).json({
+            message: 'Item Category Created!',
+            itemCategory: result
+          });
+        }
       });
     })
     .catch((err) => {
@@ -51,7 +58,7 @@ exports.deleteItemCategory = (req, res, next) => {
       return ItemCategory.findByIdAndRemove(itemCategoryId);
     })
     .then((result) => {
-      res.status(200).json({ message: 'Restaurant deleted successfully!' });
+      res.status(200).json({ message: 'Restaurant deleted successfully!', itemCategoryId: result._id });
     })
     .catch((err) => {
       if (!err.statusCode) {
@@ -101,11 +108,12 @@ exports.updateItemCategory = (req, res, next) => {
 // admin/user routes
 
 exports.getItemCategories = (req, res, next) => {
-  ItemCategory.find()
-    .then((itemCategories) => {
+  const { restaurantId } = req.params;
+  Restaurant.findById(restaurantId).populate('itemCategories')
+    .then((data) => {
       res.status(200).json({
         message: 'Categories fetched successfully',
-        itemCategories
+        data: data.itemCategories
       });
     })
     .catch((err) => {

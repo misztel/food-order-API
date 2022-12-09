@@ -9,7 +9,7 @@ const isSuperAdmin = require('../../middleware/is-superAdmin');
 const router = express.Router();
 
 // get all Categories
-router.get('/itemCategories', isAuth, isAdmin, itemCategoryAdminController.getItemCategories);
+router.get('/itemCategories/:restaurantId', isAuth, isAdmin, itemCategoryAdminController.getItemCategories);
 
 // add category
 router.post('/itemCategory', isAuth, isAdmin, itemCategoryAdminController.addItemCategory);
@@ -19,3 +19,5 @@ router.put('/itemCategory/:itemCategoryId', isAuth, isAdmin, itemCategoryAdminCo
 
 // delete category
 router.delete('/itemCategory/:itemCategoryId', isAuth, isAdmin, itemCategoryAdminController.deleteItemCategory);
+
+module.exports = router;

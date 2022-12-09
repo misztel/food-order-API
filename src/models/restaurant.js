@@ -37,7 +37,7 @@ const restaurantSchema = new Schema({
   }],
   itemCategories: [{
     type: Schema.Types.ObjectId,
-    ref: 'itemCategory'
+    ref: 'ItemCategory'
   }]
 });
 
