@@ -7,17 +7,24 @@ const itemOptionsGroupSchema = new Schema({
     type: String,
     required: true
   },
-  isRequired: {
-    type: Boolean,
-    required: true
+  required: {
+    type: Boolean
+  },
+  multiSelect: {
+    type: Boolean
   },
   item: {
     type: Schema.Types.ObjectId,
     ref: 'Item',
     required: true
   },
+  restaurant: {
+    type: Schema.Types.ObjectId,
+    ref: 'Restaurant',
+    required: true
+  },
   itemOptions: [{
-    itemOption: { type: Schema.Types.ObjectId, ref: 'Item' }
+    itemOption: { type: Schema.Types.ObjectId, ref: 'ItemOption' }
   }]
 });
 

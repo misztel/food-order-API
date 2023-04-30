@@ -8,12 +8,16 @@ const itemOptionSchema = new Schema({
     required: true
   },
   price: {
-    type: Number,
-    required: true
+    type: Number
   },
   itemOptionsGroup: {
     type: Schema.Types.ObjectId,
     ref: 'ItemOptionsGroup'
+  },
+  restaurant: {
+    type: Schema.Types.ObjectId,
+    ref: 'Restaurant',
+    required: true
   }
 });
 

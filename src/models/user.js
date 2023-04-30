@@ -31,18 +31,22 @@ const userSchema = new Schema({
     type: String,
     default: 'images/default/defaultavatar.png'
   },
+  firstName: {
+    type: String,
+    required: false
+  },
+  lastName: {
+    type: String,
+    required: false
+  },
+  localNumber: {
+    type: String,
+    required: false
+  },
   verified: {
     type: Boolean,
     required: true
   },
-  decks: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Deck'
-  }],
-  cards: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Card'
-  }],
   verifyCode: [{
     type: Schema.Types.ObjectId,
     ref: 'VerificationCode'
@@ -50,12 +54,11 @@ const userSchema = new Schema({
   resetPasswordCode: {
     type: String,
     required: false
-  }
-  // add ref to orders schema
-  // orders: [{
-  //   type: Schema.Types.ObjectId,
-  //   ref: 'Post'
-  // }]
+  },
+  orders: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Post'
+  }]
 });
 
 module.exports = mongoose.model('User', userSchema);

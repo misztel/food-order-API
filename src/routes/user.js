@@ -17,6 +17,9 @@ router.put('/user/:userId', isAuth, userController.updateUser);
 // delete user
 router.delete('/user/:userId', isAuth, userController.deleteUser);
 
+// get address data
+router.get('/getAddress/:placeId', isAuth, userController.getAddress);
+
 // tests
 router.get('/user/all', userController.allAccess);
 router.get('/user/user', isAuth, userController.userBoard);

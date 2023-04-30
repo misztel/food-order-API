@@ -3,6 +3,10 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const itemSchema = new Schema({
+  orderKey: {
+    type: Number,
+    required: true
+  },
   name: {
     type: String,
     required: true
@@ -29,8 +33,13 @@ const itemSchema = new Schema({
     ref: 'ItemCategory',
     required: true
   },
-  itemOptions: [{
-    optionId: { type: Schema.Types.ObjectId, ref: 'ItemOption' }
+  restaurant: {
+    type: Schema.Types.ObjectId,
+    ref: 'Restaurant',
+    required: true
+  },
+  itemOptionsGroup: [{
+    optionId: { type: Schema.Types.ObjectId, ref: 'ItemOptionGroup' }
   }]
 });
 

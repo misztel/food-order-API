@@ -5,7 +5,43 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const mongoose = require('mongoose');
 
+const cors = require('cors');
+
+const http = require('http');
+const socketIo = require('socket.io');
+
 const nodemailer = require('nodemailer');
+
+const app = express();
+app.use(cors({ credentials: true, origin: ['http://localhost:3000', 'http://localhost:3001'] }));
+
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    credentials: true,
+    origin: ['http://localhost:3000', 'http://localhost:3001']
+  }
+});
+
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
+io.on('connection', (socket) => {
+  console.log('New client connected');
+  socket.on('create', (room) => {
+    socket.join(room);
+    console.log('room ', room, ' created');
+  });
+  socket.on('disconnect', () => {
+    console.log('Client disconnected');
+  });
+});
+
+setInterval(() => {
+  io.to('order').emit('time', new Date());
+}, 2000);
 
 // const postRoutes = require('./routes/blog');
 const userRoutes = require('./routes/user');
@@ -14,12 +50,29 @@ const authRoutes = require('./routes/auth');
 // const restaurantRoutes = require('./routes/restaurant');
 const restaurantAdminRoutes = require('./routes/admin/restaurant');
 const itemCategoryAdminRoutes = require('./routes/admin/itemCategory');
+const itemOptionsGroupAdminRoutes = require('./routes/admin/itemOptionsGroup');
+const itemOptionsAdminRoutes = require('./routes/admin/itemOption');
 const imageRoutes = require('./routes/image');
+const itemAdminRoutes = require('./routes/admin/item');
+const deliveryAdminArea = require('./routes/admin/deliveryArea');
+const orderAdminRoutes = require('./routes/admin/order');
+const hourAdminRoutes = require('./routes/admin/hour');
+const restaurantInfoAdminRoutes = require('./routes/admin/restaurantInfo');
 
+const cartRoutes = require('./routes/user/cart');
+
+const itemCategoryRoutes = require('./routes/user/itemCategory');
+const orderRoutes = require('./routes/user/order');
+const itemRoutes = require('./routes/user/item');
+const restaurantRoutes = require('./routes/user/restaurant');
+const itemOptionsGroupRoutes = require('./routes/user/itemOptionsGroup');
+const itemOptionRoutes = require('./routes/user/itemOption');
 const deckRoutes = require('./routes/deck');
 const cardRoutes = require('./routes/card');
-
-const app = express();
+const deliveryRoutes = require('./routes/user/delivery');
+const paymentRoutes = require('./routes/user/payment');
+const hoursRoutes = require('./routes/user/hours');
+const restaurantInfoRoutes = require('./routes/user/restaurantInfo');
 
 app.use(cookieParser());
 app.use(bodyParser.json());
@@ -41,8 +94,38 @@ app.use((req, res, next) => {
 
 // app.use('/api', postRoutes);
 app.use('/auth', authRoutes);
-app.use('/api', userRoutes, deckRoutes, cardRoutes, imageRoutes);
-app.use('/admin', userAdminRoutes, restaurantAdminRoutes, itemCategoryAdminRoutes);
+app.use(
+  '/api',
+  userRoutes,
+  deckRoutes,
+  cardRoutes,
+  imageRoutes,
+  itemCategoryRoutes,
+  itemRoutes,
+  itemOptionsGroupRoutes,
+  itemOptionRoutes,
+  cartRoutes,
+  restaurantRoutes,
+  orderRoutes,
+  deliveryRoutes,
+  paymentRoutes,
+  hoursRoutes,
+  restaurantInfoRoutes
+);
+
+app.use(
+  '/admin',
+  userAdminRoutes,
+  restaurantAdminRoutes,
+  itemCategoryAdminRoutes,
+  itemAdminRoutes,
+  itemOptionsGroupAdminRoutes,
+  itemOptionsAdminRoutes,
+  deliveryAdminArea,
+  orderAdminRoutes,
+  hourAdminRoutes,
+  restaurantInfoAdminRoutes
+);
 
 // err handling
 app.use((error, req, res, next) => {
@@ -61,7 +144,7 @@ mongoose
     `mongodb+srv://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@cluster0.gmy1b.mongodb.net/${process.env.MONGODB_DATABASE}`
   )
   .then(() => {
-    app.listen(8080);
+    server.listen(process.env.PORT);
     console.log('Connection to the database established');
   })
   .catch((err) => console.log(err));

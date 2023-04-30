@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const axios = require('axios');
+
 const { validationResult } = require('express-validator');
 
 const User = require('../models/user');
@@ -75,18 +77,6 @@ exports.updateUser = (req, res, next) => {
     error.statusCode = 422;
     throw error;
   }
-  const { name } = req.body;
-  const { phone } = req.body;
-  const { address } = req.body;
-  let avatarUrl = req.body.image;
-  if (req.file) {
-    avatarUrl = req.file.path.replace('\\', '/');
-  }
-  if (!avatarUrl) {
-    const error = new Error('No file choosen');
-    error.statusCode = 422;
-    throw error;
-  }
 
   User.findById(userId)
     .then((user) => {
@@ -95,13 +85,15 @@ exports.updateUser = (req, res, next) => {
         error.statusCode = 404;
         throw error;
       }
-      if (avatarUrl !== user.avatarUrl) {
-        clearImage(user.avatarUrl);
-      }
-      user.name = name;
-      user.avatarUrl = avatarUrl;
-      user.phone = phone;
-      user.address = address;
+      // user.name = req.body.name || user.name;
+      user.phone = req.body.data.phone || user.phone;
+      user.address = req.body.data.address.value.place_id || user.address;
+      user.localNumber = req.body.data.localNumber || user.localNumber;
+      user.firstName = req.body.data.firstName || user.firstName;
+      user.lastName = req.body.data.secondName || user.lastName;
+
+      console.log(req.body.data);
+
       return user.save();
     })
     .then((result) => {
@@ -130,6 +122,27 @@ exports.deleteUser = (req, res, next) => {
     })
     .then((result) => {
       res.status(200).json({ message: 'User deleted successfully!' });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.getAddress = (req, res, next) => {
+  const { placeId } = req.params;
+
+  const url = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${process.env.GOOGLE_API_KEY}`;
+
+  axios.get(url)
+    .then((response) => {
+      console.log(response);
+      res.status(200).json({
+        message: 'Address data fetched successfully',
+        data: response.data.result
+      });
     })
     .catch((err) => {
       if (!err.statusCode) {

@@ -13,3 +13,11 @@ router.post('/itemOption', isAuth, isAdmin, itemOptionAdminController.addItemOpt
 
 // delete item option
 router.delete('/itemOption/:itemOptionId', isAuth, isAdmin, itemOptionAdminController.deleteItemOption);
+
+// get items options
+router.get('/itemOptions/:restaurantId', isAuth, isAdmin, itemOptionAdminController.getItemOptions);
+
+// update item option
+router.put('/itemOption/:itemOptionId', isAuth, isAdmin, itemOptionAdminController.updateItemOption);
+
+module.exports = router;

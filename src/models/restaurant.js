@@ -38,6 +38,26 @@ const restaurantSchema = new Schema({
   itemCategories: [{
     type: Schema.Types.ObjectId,
     ref: 'ItemCategory'
+  }],
+  itemOptionsGroup: [{
+    type: Schema.Types.ObjectId,
+    ref: 'ItemOptionsGroup'
+  }],
+  itemOptions: [{
+    type: Schema.Types.ObjectId,
+    ref: 'ItemOption'
+  }],
+  deliveryAreas: [{
+    type: Schema.Types.ObjectId,
+    ref: 'DeliveryArea'
+  }],
+  hours: [{
+    type: Schema.Types.ObjectId,
+    ref: 'Hour'
+  }],
+  restaurantInfo: [{
+    type: Schema.Types.ObjectId,
+    ref: 'RestaurantInfo'
   }]
 });
 

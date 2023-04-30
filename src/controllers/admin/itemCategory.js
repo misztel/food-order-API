@@ -21,7 +21,8 @@ exports.addItemCategory = (req, res, next) => {
   const itemCategory = new ItemCategory({
     name,
     image,
-    restaurant: restaurantId
+    restaurant: restaurantId,
+    orderKey: 100
   });
 
   itemCategory.save()
@@ -115,6 +116,55 @@ exports.getItemCategories = (req, res, next) => {
         message: 'Categories fetched successfully',
         data: data.itemCategories
       });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.getItemCategory = (req, res, next) => {
+  const { itemCategoryId } = req.params;
+  console.log(req.params.itemCategoryId);
+  ItemCategory.findById(itemCategoryId)
+    .then((data) => {
+      res.status(200).json({
+        message: 'Category fetched successfully',
+        data
+      });
+    })
+    .catch((err) => {
+      if (!err.statusCode) {
+        err.statusCode = 500;
+      }
+      next(err);
+    });
+};
+
+exports.updateItemCategoriesOrder = (req, res, next) => {
+  const { items, restaurantId } = req.body;
+
+  const updatePromises = items.map((item) => (
+    ItemCategory.findOneAndUpdate({ _id: item._id }, { $set: { orderKey: item.orderKey } })
+  ));
+
+  Promise.all(updatePromises)
+    .then(() => {
+      Restaurant.findById(restaurantId).populate('itemCategories')
+        .then((data) => {
+          res.status(200).json({
+            message: 'Items Categories fetched successfully',
+            data: data.itemCategories
+          });
+        })
+        .catch((err) => {
+          if (!err.statusCode) {
+            err.statusCode = 500;
+          }
+          next(err);
+        });
     })
     .catch((err) => {
       if (!err.statusCode) {

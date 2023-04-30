@@ -2,28 +2,24 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const itemCategorySchema = new Schema({
-  orderKey: {
+const hourSchema = new Schema({
+  day: {
     type: Number,
     required: true
   },
-  name: {
-    type: String,
+  open: {
+    type: Number,
     required: true
   },
-  image: {
-    type: String,
+  close: {
+    type: Number,
     required: true
   },
   restaurant: {
     type: Schema.Types.ObjectId,
     ref: 'Restaurant',
     required: true
-  },
-  items: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Item'
-  }]
+  }
 });
 
-module.exports = mongoose.model('ItemCategory', itemCategorySchema);
+module.exports = mongoose.model('Hour', hourSchema);
