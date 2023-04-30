@@ -26,16 +26,21 @@ const credentials = {
   ca
 };
 
-app.use(cors({ credentials: true, origin: ['https://host424213.xce.pl/mr/client/', 'https://host424213.xce.pl/mr/admin/', 'http://localhost:3000', 'http://localhost:3001'] }));
-
-const whitelist = ['https://mozeryba.pl', 'https://www.mozeryba.pl', 'https://host424213.xce.pl/mr/client/', 'https://host424213.xce.pl/mr/admin/'];
+app.use(cors(
+  {
+    credentials: true,
+    origin: ['https://host424213.xce.pl/mr/client/', 'https://host424213.xce.pl/mr/admin/', 'http://localhost:3000', 'http://localhost:3001'],
+    allowedHeaders: 'Accept, Authorization, Content-Type, X-Requested-With, Range',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
+  }
+));
 
 const server = https.createServer(credentials, app);
 
 const io = socketIo(server, {
   cors: {
     credentials: true,
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl/mr/client/', 'https://host424213.xce.pl/mr/admin/']
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl/mr/client', 'https://host424213.xce.pl/mr/admin']
   }
 });
 
@@ -97,7 +102,7 @@ app.use('/upload', express.static(path.join(__dirname, 'upload')));
 
 // CORS Headers
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl/mr/client/', 'https://host424213.xce.pl/mr/admin/'];
+  const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl/mr/client', 'https://host424213.xce.pl/mr/admin'];
   const { origin } = req.headers;
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
