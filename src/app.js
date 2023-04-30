@@ -8,18 +8,34 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const http = require('http');
+const https = require('https');
 const socketIo = require('socket.io');
+const fs = require('fs');
 
 const nodemailer = require('nodemailer');
 
 const app = express();
-app.use(cors({ credentials: true, origin: ['http://localhost:3000', 'http://localhost:3001'] }));
 
-const server = http.createServer(app);
+const privateKey = fs.readFileSync('/etc/letsencrypt/live/mmisztelaapi.pl/privkey.pem', 'utf8');
+const certificate = fs.readFileSync('/etc/letsencrypt/live/mmisztelaapi.pl/cert.pem', 'utf8');
+const ca = fs.readFileSync('/etc/letsencrypt/live/mmisztelaapi.pl/chain.pem', 'utf8');
+
+const credentials = {
+  key: privateKey,
+  cert: certificate,
+  ca
+};
+
+app.use(cors({ credentials: true, origin: ['https://host424213.xce.pl/mr/client/', 'https://host424213.xce.pl/mr/admin/', 'http://localhost:3000', 'http://localhost:3001'] }));
+
+const whitelist = ['https://mozeryba.pl', 'https://www.mozeryba.pl', 'https://host424213.xce.pl/mr/client/', 'https://host424213.xce.pl/mr/admin/'];
+
+const server = https.createServer(credentials, app);
+
 const io = socketIo(server, {
   cors: {
     credentials: true,
-    origin: ['http://localhost:3000', 'http://localhost:3001']
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl/mr/client/', 'https://host424213.xce.pl/mr/admin/']
   }
 });
 
