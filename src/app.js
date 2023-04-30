@@ -29,18 +29,31 @@ const credentials = {
 app.use(cors(
   {
     credentials: true,
-    origin: ['https://host424213.xce.pl/mr/client/', 'https://host424213.xce.pl/mr/admin/', 'http://localhost:3000', 'http://localhost:3001'],
+    origin: ['https://host424213.xce.pl', 'http://localhost:3000', 'http://localhost:3001'],
     allowedHeaders: 'Accept, Authorization, Content-Type, X-Requested-With, Range',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
   }
 ));
+
+// CORS Headers
+app.use((req, res, next) => {
+  const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl'];
+  const { origin } = req.headers;
+  if (allowedOrigins.includes(origin)) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  next();
+});
 
 const server = https.createServer(credentials, app);
 
 const io = socketIo(server, {
   cors: {
     credentials: true,
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl/mr/client', 'https://host424213.xce.pl/mr/admin']
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl', 'https://host424213.xce.pl']
   }
 });
 
@@ -99,19 +112,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 
 app.use('/upload', express.static(path.join(__dirname, 'upload')));
-
-// CORS Headers
-app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl/mr/client', 'https://host424213.xce.pl/mr/admin'];
-  const { origin } = req.headers;
-  if (allowedOrigins.includes(origin)) {
-    res.setHeader('Access-Control-Allow-Origin', origin);
-  }
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, PATCH, DELETE');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  res.setHeader('Access-Control-Allow-Credentials', 'true');
-  next();
-});
 
 // app.use('/api', postRoutes);
 app.use('/auth', authRoutes);
