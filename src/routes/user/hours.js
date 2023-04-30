@@ -9,6 +9,6 @@ const isSuperAdmin = require('../../middleware/is-superAdmin');
 const router = express.Router();
 
 // get specified user
-router.get('/isopen/:restaurantId', isAuth, isAdmin, hourUserController.isOpen);
+router.get('/isopen/:restaurantId', hourUserController.isOpen);
 
 module.exports = router;
