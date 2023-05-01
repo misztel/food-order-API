@@ -115,7 +115,9 @@ exports.payment = (req, res, next) => {
 };
 
 exports.paymentStatus = (req, res, next) => {
+  console.log('awaiting ');
   if (req.body.order.status === 'COMPLETED') {
+    console.log('completed');
     Order.findOne({ _id: req.body.order.extOrderId })
       .then((order) => {
         const newStatus = order.realizationTimeOption === 'now' ? 'new' : 'planned';
