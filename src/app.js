@@ -26,6 +26,8 @@ const credentials = {
   ca
 };
 
+app.set('trust proxy', 1);
+
 app.use(cors(
   {
     credentials: true,
