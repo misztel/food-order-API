@@ -359,7 +359,7 @@ exports.refreshToken = async (req, res) => {
     res.cookie('JWT', refreshToken.token, {
       maxAge: 86_400_000,
       httpOnly: true,
-      sameSite: 'none',
+      SameSite: 'none',
       secure: 'true'
     });
 
