@@ -62,7 +62,7 @@ exports.payment = (req, res, next) => {
       }));
 
       const data = {
-        notifyUrl: 'https://5318-2a02-a311-c040-5100-689c-7a1b-8585-8b26.eu.ngrok.io/api/paymentStatus',
+        notifyUrl: 'https://mmisztelaapi.pl:8080/api/paymentStatus',
         continueUrl: process.env.PAYU_CONTINUE_URL,
         customerIp: '127.0.0.1', // add true user IP address
         merchantPosId: process.env.PAYU_POS_ID,
