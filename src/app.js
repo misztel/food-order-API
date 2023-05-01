@@ -26,8 +26,6 @@ const credentials = {
   ca
 };
 
-app.set('trust proxy', 1);
-
 app.use(cors(
   {
     credentials: true,
@@ -50,7 +48,7 @@ app.use((req, res, next) => {
   next();
 });
 
-const server = https.createServer(credentials, app);
+const server = http.createServer(credentials, app);
 
 const io = socketIo(server, {
   cors: {
