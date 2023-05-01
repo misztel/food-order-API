@@ -359,8 +359,8 @@ exports.refreshToken = async (req, res) => {
     res.cookie('JWT', refreshToken.token, {
       maxAge: 86_400_000,
       httpOnly: true,
-      SameSite: 'none',
-      secure: 'true'
+      sameSite: 'none',
+      secure: true
     });
 
     return res.status(200).json({
