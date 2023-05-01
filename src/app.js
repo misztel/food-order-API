@@ -29,7 +29,7 @@ const credentials = {
 app.use(cors(
   {
     credentials: true,
-    origin: ['https://host424213.xce.pl', 'http://localhost:3000', 'http://localhost:3001', 'https://mmisztelaapi.pl'],
+    origin: ['https://host424213.xce.pl', 'http://localhost:3000', 'http://localhost:3001', 'https://mmisztelaapi.pl', 'http://mmisztelaapi.pl'],
     allowedHeaders: 'Accept, Authorization, Content-Type, X-Requested-With, Range',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE'
   }
@@ -37,7 +37,7 @@ app.use(cors(
 
 // CORS Headers
 app.use((req, res, next) => {
-  const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl', 'https://mmisztelaapi.pl'];
+  const allowedOrigins = ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl', 'https://mmisztelaapi.pl', 'http://mmisztelaapi.pl'];
   const { origin } = req.headers;
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
@@ -53,7 +53,7 @@ const server = https.createServer(credentials, app);
 const io = socketIo(server, {
   cors: {
     credentials: true,
-    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl', 'https://mmisztelaapi.pl']
+    origin: ['http://localhost:3000', 'http://localhost:3001', 'https://host424213.xce.pl', 'https://mmisztelaapi.pl', 'http://mmisztelaapi.pl']
   }
 });
 
